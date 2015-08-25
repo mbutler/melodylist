@@ -2,11 +2,18 @@ var List = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Lis
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Done');
 
 List.on('child_added', function(snapshot) {
-        var message = snapshot.val();   
-        snapshot.key();     
+        var message = snapshot.val();             
         createTodo(message.name, snapshot.key()); 
         countTodos();
-      });
+});
+
+List.on('child_removed', function(snapshot) {
+        var message = snapshot.val();               
+        done(message.name); 
+        var ItemRef = snapshot.key();           
+        removeItem(ItemRef);
+        countTodos();
+});
 
 
 $("#sortable").sortable({
@@ -43,10 +50,10 @@ $('.add-todo').on('keypress',function (e) {
 $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     if($(this).prop('checked')){
         var doneItem = $(this).parent().parent().find('label').text();
-        testref = List.child(doneItem);
-        //console.log(testref);
-        $(this).parent().parent().parent().addClass('remove');
-        done(doneItem);
+        var doneItemId = $(this).parent().parent().parent().attr('id')
+        var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List/'+doneItemId);
+        ItemRef.remove();
+        $(this).parent().parent().parent().addClass('remove');        
         countTodos();
     }
 });
@@ -97,5 +104,6 @@ function AllDone(){
 
 //remove done task from list
 function removeItem(element){
-    $(element).parent().remove();
+    var x=document.getElementById(element);
+    $(x).remove();
 }
