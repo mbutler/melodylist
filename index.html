@@ -15,6 +15,7 @@
 
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"></link>
         <link rel="stylesheet" type="text/css" href="style.css"></link>
+        <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"></link>
 
     </head>
     <body>
@@ -24,9 +25,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="todolist not-done">
+                    <div class="todolist not-done ui-widget">
                      <h1>M&M List</h1>
-                        <input type="text" class="form-control add-todo" placeholder="Add item">
+                        <input type="text" id="item-input" class="form-control add-todo" placeholder="Add item">
                             <button id="checkAll" class="btn btn-success">Mark all as done</button>
                             
                             <hr>

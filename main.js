@@ -2,23 +2,27 @@ var List = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Lis
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Done');
 
 List.on('child_added', function(snapshot) {
-        var message = snapshot.val();             
+        var message = snapshot.val();                   
         createTodo(message.name, snapshot.key()); 
         countTodos();
 });
 
 List.on('child_removed', function(snapshot) {
-        var message = snapshot.val();
-        console.log("sending: " +message.name);               
-        //done(message.name); 
+        var message = snapshot.val(); 
         var ItemRef = snapshot.key();           
         removeItem(ItemRef);
         countTodos();
 });
 
 Done.on('child_added', function(snapshot) {
-        var message = snapshot.val();             
-        done(message.name);         
+        var message = snapshot.val();            
+        done(message.name, snapshot.key());         
+});
+
+Done.on('child_removed', function(snapshot) {
+        var message = snapshot.val(); 
+        var ItemRef = snapshot.key();           
+        removeItem(ItemRef);
 });
 
 
@@ -64,10 +68,25 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     }
 });
 
-//delete done task from "already done"
+//delete done task from "completed"
 $('.todolist').on('click','.remove-item',function(){
-    removeItem(this);
+    var deleteItemId = $(this).parent().attr('id');  
+    var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Done/'+deleteItemId);
+    ItemRef.remove();     
 });
+
+var availableTags = [
+      "Apples",
+      "Tempeh",
+      "Tofu",
+      "Popcorn"
+    ];
+
+$( "#item-input" ).autocomplete({
+      source: availableTags
+    });
+
+
 
 // count tasks
 function countTodos(){
@@ -83,9 +102,9 @@ function createTodo(text, id){
 }
 
 //mark task as done
-function done(doneItem){
+function done(doneItem, id){
     var done = doneItem;
-    var markup = '<li>'+ done +'<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
+    var markup = '<li id="'+ id +'">'+ done +'<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
     $('#done-items').append(markup);
     $('.remove').remove();
 }
@@ -112,4 +131,6 @@ function AllDone(){
 function removeItem(element){
     var x=document.getElementById(element);
     $(x).remove();
+
 }
+
