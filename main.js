@@ -8,11 +8,17 @@ List.on('child_added', function(snapshot) {
 });
 
 List.on('child_removed', function(snapshot) {
-        var message = snapshot.val();               
-        done(message.name); 
+        var message = snapshot.val();
+        console.log("sending: " +message.name);               
+        //done(message.name); 
         var ItemRef = snapshot.key();           
         removeItem(ItemRef);
         countTodos();
+});
+
+Done.on('child_added', function(snapshot) {
+        var message = snapshot.val();             
+        done(message.name);         
 });
 
 
@@ -36,10 +42,9 @@ $('.add-todo').on('keypress',function (e) {
       e.preventDefault
       if (e.which == 13) {
            if($(this).val() != ''){
-              var todo = $(this).val();
-              var name = todo;   
+              var todo = $(this).val();                 
               var index = $('li:last').index()+1;
-              List.push({name: name, position: index});          
+              List.push({name: todo, position: index});          
               countTodos();
            }else{
                // some validation
@@ -50,9 +55,10 @@ $('.add-todo').on('keypress',function (e) {
 $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     if($(this).prop('checked')){
         var doneItem = $(this).parent().parent().find('label').text();
-        var doneItemId = $(this).parent().parent().parent().attr('id')
+        var doneItemId = $(this).parent().parent().parent().attr('id');
         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List/'+doneItemId);
         ItemRef.remove();
+        Done.push({name: doneItem});
         $(this).parent().parent().parent().addClass('remove');        
         countTodos();
     }
