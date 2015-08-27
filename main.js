@@ -78,7 +78,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     if($(this).prop('checked')){
         var doneItem = $(this).parent().parent().find('label').text();
         var doneItemId = $(this).parent().parent().parent().attr('id');
-        var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/List/' + doneItemId);
+        var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List/' + doneItemId);
         ItemRef.remove();
         Done.push({name: doneItem});   
         countTodos();
@@ -88,7 +88,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
 //delete done task from "completed"
 $('.todolist').on('click','.remove-item',function(){
     var deleteItemId = $(this).parent().attr('id');  
-    var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/Done/' + deleteItemId);
+    var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done/' + deleteItemId);
     ItemRef.remove();     
 });
 
@@ -121,7 +121,7 @@ function AllDone(){
     $('#sortable li').each( function() {      
          var doneItem = $(this).text(); 
          var doneItemId = $(this).attr('id');
-         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/List/' + doneItemId);
+         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List/' + doneItemId);
          ItemRef.remove();
          Done.push({name: doneItem}); 
     }); 
