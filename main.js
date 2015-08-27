@@ -73,8 +73,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
         var doneItemId = $(this).parent().parent().parent().attr('id');
         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List/'+doneItemId);
         ItemRef.remove();
-        Done.push({name: doneItem});        
-        $(this).parent().parent().parent().addClass('remove');        
+        Done.push({name: doneItem});   
         countTodos();
     }
 });
@@ -107,7 +106,6 @@ function done(doneItem, id){
     var done = doneItem;
     var markup = '<li id="'+ id +'">'+ done +'<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
     $('#done-items').append(markup);
-    $('.remove').remove();
 }
 
 //mark all tasks as done
