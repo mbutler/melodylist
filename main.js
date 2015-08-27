@@ -112,18 +112,15 @@ function done(doneItem, id){
 
 //mark all tasks as done
 function AllDone(){
-    var myArray = [];
 
-    $('#sortable li').each( function() {
-         myArray.push($(this).text());   
-    });
-    
-    // add to done
-    for (i = 0; i < myArray.length; i++) {
-        $('#done-items').append('<li>' + myArray[i] + '<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>');
-    }
-    
-    // myArray
+    $('#sortable li').each( function() {      
+         var doneItem = $(this).text(); 
+         var doneItemId = $(this).attr('id');
+         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List/'+doneItemId);
+         ItemRef.remove();
+         Done.push({name: doneItem}); 
+    }); 
+
     $('#sortable li').remove();
     countTodos();
 }
