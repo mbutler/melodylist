@@ -8,7 +8,7 @@ var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName 
 var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Tags');
 
 
-$("h1").text(listName);
+$(".not-done h1").text(listName);
 
 
 //Listens for data changes
