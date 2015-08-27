@@ -1,9 +1,14 @@
 var List = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List');
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Done');
+var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Tags/');
 
+setTags();
+
+//Listens for data changes
 List.on('child_added', function(snapshot) {
+
         var message = snapshot.val();                   
-        createTodo(message.name, snapshot.key()); 
+        createTodo(message.name, snapshot.key());         
         countTodos();
 });
 
@@ -25,7 +30,12 @@ Done.on('child_removed', function(snapshot) {
         removeItem(ItemRef);
 });
 
+Tags.on('child_added', function(snapshot) {
+        setTags();       
+});
 
+
+//control the view with jquery
 $("#sortable").sortable({
     update: function(e, ui) {            
             newIndex = ui.item.index();
@@ -47,10 +57,11 @@ $('.add-todo').on('keypress',function (e) {
       if (e.which == 13) {
            if($(this).val() != ''){
               var todo = $(this).val();                 
-              var index = $('li:last').index()+1;
-              List.push({name: todo, position: index});          
+              var index = $('li:last').index()+1;                     
+              List.push({name: todo, position: index}); 
+              addTag(todo);              
               countTodos();
-           }else{
+           } else {
                // some validation
            }
       }
@@ -62,7 +73,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
         var doneItemId = $(this).parent().parent().parent().attr('id');
         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/List/'+doneItemId);
         ItemRef.remove();
-        Done.push({name: doneItem});
+        Done.push({name: doneItem});        
         $(this).parent().parent().parent().addClass('remove');        
         countTodos();
     }
@@ -75,18 +86,8 @@ $('.todolist').on('click','.remove-item',function(){
     ItemRef.remove();     
 });
 
-var availableTags = [
-      "Apples",
-      "Tempeh",
-      "Tofu",
-      "Popcorn"
-    ];
 
-$( "#item-input" ).autocomplete({
-      source: availableTags
-    });
-
-
+//Functions
 
 // count tasks
 function countTodos(){
@@ -134,3 +135,32 @@ function removeItem(element){
 
 }
 
+//empty the old local array, get snapshot of Tags object, loop through adding all children to local array
+function setTags() {
+  availableTags = [];
+  Tags.once("value", function(snapshot) {
+    // The callback function will get called for each child
+    snapshot.forEach(function(childSnapshot) {
+      //key will be the unique child name for each      
+      var key = childSnapshot.key();
+      // childData will be the actual contents of the child
+      var childData = childSnapshot.val();
+      //name is the property set when pushing to Tags in addTag function
+      var tag = childData.name;      
+      availableTags.push(tag);      
+    });
+  });
+
+  //set the autocomplete for input field
+  $( "#item-input" ).autocomplete({
+        source: availableTags
+    });
+}
+
+function addTag(tag) {
+  //check to see if the tag is already in the local array. If not, push it to firebase then reset local array
+  if ($.inArray(tag, availableTags) == -1) {
+    Tags.push({name: tag});
+    setTags();
+ }
+}
