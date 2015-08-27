@@ -1,9 +1,11 @@
-var listName = "Grocery";
-var listName = "Household";
+var appName = "Todo";
 
-var List = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/List');
-var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/Done');
-var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ listName +'/Tags');
+var listName = "Grocery";
+//var listName = "Household";
+
+var List = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List');
+var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done');
+var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Tags');
 
 
 $("h1").text(listName);
