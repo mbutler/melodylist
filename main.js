@@ -2,7 +2,7 @@ var List = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Lis
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Done');
 var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/Grocery/Tags/');
 
-setTags();
+//setTags();
 
 //Listens for data changes
 List.on('child_added', function(snapshot) {
@@ -30,7 +30,7 @@ Done.on('child_removed', function(snapshot) {
         removeItem(ItemRef);
 });
 
-Tags.on('child_added', function(snapshot) {
+Tags.on('value', function(snapshot) {
         setTags();       
 });
 
