@@ -12,11 +12,16 @@ if (localStorage.getItem('storagelist') === null) {
 App.once("value", function(snapshot) {
   snapshot.forEach(function(childSnapshot) {
     var key = childSnapshot.key();
-    var markup = '<li id = "single-list"><a href="#">'+ key + '</a></li>';   
+    var markup = '<li><a href="#">'+ key + '</a></li>';   
     $('#lists').append(markup); 
 
     $("#lists li").click(function () {
-        storagelistname = $(this).text()
+        listText = $(this).text();
+        if (listText == "New List") {
+          //$('#newListModal').modal('toggle');
+          alert("fake modal");
+        }
+        storagelistname = listText;
         localStorage.setItem('storagelist', storagelistname);
         location.reload();
     }); 
@@ -26,7 +31,7 @@ App.once("value", function(snapshot) {
 
 var List = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List');
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done');
-var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Tags');
+var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/Tags');
 
 
 
@@ -96,6 +101,13 @@ $('.add-todo').on('keypress',function (e) {
            }
       }
 });
+
+$('#save-button').on('click', function () {
+  var storagelistname = $('#list-input').val();
+  localStorage.setItem('storagelist', storagelistname);
+  location.reload();
+})
+
 // mark task as done
 $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     if($(this).prop('checked')){
@@ -126,7 +138,7 @@ function countTodos(){
 
 //create task
 function createTodo(text, id){    
-    var markup = '<li id="'+ id +'" class="ui-state-default"><div class="checkbox"><label><input type="checkbox" value="" />'+ text +'</label></div></li>';   
+    var markup = '<li id="'+ id +'" class="ui-state-default"><div class="checkbox"><label><input type="checkbox" value="" /><span class="listitem">'+ text +'</span></label></div></li>';   
     $('#sortable').append(markup);      
     $('.add-todo').val('');    
 }
@@ -134,7 +146,7 @@ function createTodo(text, id){
 //mark task as done
 function done(doneItem, id){
     var done = doneItem;
-    var markup = '<li id="'+ id +'">'+ done +'<button class="btn btn-default btn-xs pull-right  remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
+    var markup = '<li id="'+ id +'">'+ done +'<button class="btn btn-default btn-xs pull-right remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
     $('#done-items').append(markup);
 }
 
@@ -191,5 +203,9 @@ function addTag(tag) {
 }
 
 $.fn.editable.defaults.mode = 'inline';
-$('#listTitle').editable();
+//$('#listTitle').editable();
+
+
+
+
 
