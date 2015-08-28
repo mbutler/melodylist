@@ -1,11 +1,33 @@
 var appName = "Todo";
+var App = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName);
+var listName = '';
 
-var listName = "Grocery";
-//var listName = "Household";
+if (localStorage.getItem('storagelist') === null) {
+    localStorage.setItem('storagelist', 'Grocery');
+    listName = localStorage.getItem('storagelist');
+} else {
+  listName = localStorage.getItem('storagelist');
+}
+
+App.once("value", function(snapshot) {
+  snapshot.forEach(function(childSnapshot) {
+    var key = childSnapshot.key();
+    var markup = '<li id = "single-list"><a href="#">'+ key + '</a></li>';   
+    $('#lists').append(markup); 
+
+    $("#lists li").click(function () {
+        storagelistname = $(this).text()
+        localStorage.setItem('storagelist', storagelistname);
+        location.reload();
+    }); 
+  });
+});
+
 
 var List = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List');
 var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done');
 var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Tags');
+
 
 
 $(".not-done h1").text(listName);
@@ -49,6 +71,7 @@ $("#sortable").sortable({
             console.log(newIndex);            
         }    
 });
+
 $("#sortable").disableSelection();
 
 countTodos();
@@ -166,3 +189,7 @@ function addTag(tag) {
     setTags();
  }
 }
+
+$.fn.editable.defaults.mode = 'inline';
+$('#listTitle').editable();
+
