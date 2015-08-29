@@ -1,6 +1,7 @@
+var appPath = "https://flickering-fire-8187.firebaseio.com/";
 var appName = "Todo";
-var App = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName);
-var listName = '';
+
+var App = new Firebase(appPath + appName);
 
 if (localStorage.getItem('storagelist') === null) {
     localStorage.setItem('storagelist', 'Grocery');
@@ -16,12 +17,7 @@ App.once("value", function(snapshot) {
     $('#lists').append(markup); 
 
     $("#lists li").click(function () {
-        listText = $(this).text();
-        if (listText == "New List") {
-          //$('#newListModal').modal('toggle');
-          alert("fake modal");
-        }
-        storagelistname = listText;
+        storagelistname = $(this).text();
         localStorage.setItem('storagelist', storagelistname);
         location.reload();
     }); 
@@ -29,10 +25,9 @@ App.once("value", function(snapshot) {
 });
 
 
-var List = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List');
-var Done = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done');
-var Tags = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/Tags');
-
+var List = new Firebase(appPath + appName +'/'+ listName +'/List');
+var Done = new Firebase(appPath + appName +'/'+ listName +'/Done');
+var Tags = new Firebase(appPath + appName +'/Tags/List');
 
 
 $(".not-done h1").text(listName);
@@ -64,7 +59,7 @@ Done.on('child_removed', function(snapshot) {
         removeItem(ItemRef);
 });
 
-Tags.on('value', function(snapshot) {
+Tags.on('value', function(snapshot) {        
         setTags();       
 });
 
@@ -113,7 +108,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
     if($(this).prop('checked')){
         var doneItem = $(this).parent().parent().find('label').text();
         var doneItemId = $(this).parent().parent().parent().attr('id');
-        var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List/' + doneItemId);
+        var ItemRef = new Firebase(appPath + appName +'/'+ listName +'/List/' + doneItemId);
         ItemRef.remove();
         Done.push({name: doneItem});   
         countTodos();
@@ -123,7 +118,7 @@ $('.todolist').on('change','#sortable li input[type="checkbox"]',function(){
 //delete done task from "completed"
 $('.todolist').on('click','.remove-item',function(){
     var deleteItemId = $(this).parent().attr('id');  
-    var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/Done/' + deleteItemId);
+    var ItemRef = new Firebase(appPath + appName +'/'+ listName +'/Done/' + deleteItemId);
     ItemRef.remove();     
 });
 
@@ -131,32 +126,32 @@ $('.todolist').on('click','.remove-item',function(){
 //Functions
 
 // count tasks
-function countTodos(){
+function countTodos() {
     var count = $("#sortable li").length;
     $('.count-todos').html(count);
 }
 
 //create task
-function createTodo(text, id){    
+function createTodo(text, id) {    
     var markup = '<li id="'+ id +'" class="ui-state-default"><div class="checkbox"><label><input type="checkbox" value="" /><span class="listitem">'+ text +'</span></label></div></li>';   
     $('#sortable').append(markup);      
     $('.add-todo').val('');    
 }
 
 //mark task as done
-function done(doneItem, id){
+function done(doneItem, id) {
     var done = doneItem;
     var markup = '<li id="'+ id +'">'+ done +'<button class="btn btn-default btn-xs pull-right remove-item"><span class="glyphicon glyphicon-remove"></span></button></li>';
     $('#done-items').append(markup);
 }
 
 //mark all tasks as done
-function AllDone(){
+function AllDone() {
 
     $('#sortable li').each( function() {      
          var doneItem = $(this).text(); 
          var doneItemId = $(this).attr('id');
-         var ItemRef = new Firebase('https://flickering-fire-8187.firebaseio.com/'+ appName +'/'+ listName +'/List/' + doneItemId);
+         var ItemRef = new Firebase(appPath + appName +'/'+ listName +'/List/' + doneItemId);
          ItemRef.remove();
          Done.push({name: doneItem}); 
     }); 
